@@ -1,0 +1,23 @@
+{
+  "name": "outline-backuper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swallowarc/outline-backuper.git"
+  },
+  "author": "mjkt39",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swallowarc/outline-backuper/issues"
+  },
+  "homepage": "https://github.com/swallowarc/outline-backuper#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "sprintf-js": "^1.1.2"
+  }
+}
