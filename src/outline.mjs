@@ -2,8 +2,10 @@ import axios from "axios";
 import s from "sprintf-js"
 
 export class OutlineClient {
+  #axios;
+
   constructor(baseURL, token) {
-    this.axios = axios.create({
+    this.#axios = axios.create({
       baseURL: baseURL, // URL:port
       headers: {
         'content-type': 'application/json',
@@ -15,7 +17,7 @@ export class OutlineClient {
   }
 
   async ExportCollection(collectionID) {
-    const res = await this.axios.post('collections.export', {
+    const res = await this.#axios.post('collections.export', {
       'id': collectionID,
     });
 
