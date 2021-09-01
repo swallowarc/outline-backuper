@@ -6,7 +6,7 @@ export class Env {
     this.outline = {
       baseURL: process.env.OUTLINE_BASE_URL ?? 'http://localhost/api',
       token: process.env.OUTLINE_TOKEN ?? 'dummy',
-      collectionIDs: process.env.COLLECTION_IDS ?? ['dummy'],
+      collectionIDs: process.env.OUTLINE_COLLECTION_IDS ?? ['dummy'],
     };
     this.aws = {
       accessKey: process.env.AWS_ACCESS_KEY_ID ?? 'dummy',

@@ -11,21 +11,40 @@ export class S3Client {
     this.#bucket = bucketName;
   }
 
-  async ListBuckets() {
-    let result = null;
-    this.#s3.listBuckets(function (err, data) {
-      if (err) {
-        throw err;
+  async ListObjects() {
+    let keyList = [];
+    for (let continuationToken = null; ;) {
+      const params = {
+        Bucket: this.#bucket,
+      };
+      if (continuationToken) {
+        params.ContinuationToken = continuationToken;
       }
 
-      result = data.Buckets;
-    });
+      const res = await this.#s3.listObjectsV2(params).promise();
+      res.Contents.map(v => v.Key).forEach(v => {
+        keyList.push(v);
+      });
 
-    return result;
+      if (!res.IsTruncated) {
+        break;
+      }
+
+      // 1度に1000件までしか取得できないため、続きがある場合は再取得する
+      continuationToken = res.NextContinuationToken;
+    }
+
+    return keyList;
   }
 
   async Upload(key, data) {
-    const uploadParams = {Bucket: this.#bucket, Key: key, Body: data};
+    const uploadParams = {
+      Bucket: this.#bucket,
+      Key: key,
+      Body: data,
+      ContentEncoding: 'base64',
+      ContentType: 'application/zip',
+    };
     this.#s3.upload(uploadParams, function (err, data) {
       if (err) {
         throw err;

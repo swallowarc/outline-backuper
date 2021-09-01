@@ -18,7 +18,11 @@ export class OutlineClient {
 
   async ExportCollection(collectionID) {
     const res = await this.#axios.post('collections.export', {
-      'id': collectionID,
+      id: collectionID,
+      responseType: 'arraybuffer',
+      headers: {
+        Accept: 'application/zip'
+      }
     });
 
     return res.data;
