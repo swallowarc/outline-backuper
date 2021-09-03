@@ -11,19 +11,20 @@ export class S3Client {
     this.#bucket = bucketName;
   }
 
-  async ListObjects() {
+  async listObjects(prefix) {
     let keyList = [];
     for (let continuationToken = null; ;) {
       const params = {
         Bucket: this.#bucket,
+        Prefix: prefix,
       };
       if (continuationToken) {
         params.ContinuationToken = continuationToken;
       }
 
       const res = await this.#s3.listObjectsV2(params).promise();
-      res.Contents.map(v => v.Key).forEach(v => {
-        keyList.push(v);
+      res.Contents.map(v => v.Key).forEach(key => {
+        keyList.push(key);
       });
 
       if (!res.IsTruncated) {
@@ -37,7 +38,7 @@ export class S3Client {
     return keyList;
   }
 
-  async Upload(key, data) {
+  async upload(key, data) {
     const uploadParams = {
       Bucket: this.#bucket,
       Key: key,
@@ -55,7 +56,7 @@ export class S3Client {
     });
   }
 
-  async Delete(key) {
+  async delete(key) {
     const deleteParams = {
       Bucket: this.#bucket,
       Key: key,
