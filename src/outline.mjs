@@ -1,6 +1,5 @@
 import axios from "axios";
-import s from "sprintf-js"
-import fs from "fs";
+import s from "sprintf-js";
 
 export class OutlineClient {
   #axios;
