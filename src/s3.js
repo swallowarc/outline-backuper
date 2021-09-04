@@ -1,10 +1,12 @@
 import aws from 'aws-sdk';
 
 export class S3Client {
+  #logger;
   #bucket;
   #s3;
 
-  constructor(region, bucketName) {
+  constructor(logger, region, bucketName) {
+    this.#logger = logger;
     // see https://docs.aws.amazon.com/ja_jp/sdk-for-javascript/v2/developer-guide/s3-example-creating-buckets.html
     aws.config.update({region: region});
     this.#s3 = new aws.S3({apiVersion: '2006-03-01'});
@@ -46,27 +48,40 @@ export class S3Client {
       ContentEncoding: 'base64',
       ContentType: 'application/zip',
     };
-    this.#s3.upload(uploadParams, function (err, data) {
-      if (err) {
-        throw err;
-      }
-      if (data) {
-        console.log("Upload Success", data.Location);
-      }
+
+    return new Promise((resolve, reject) => {
+      this.#s3.upload(uploadParams, (err, data) => {
+        if (err) {
+          reject(err);
+        }
+        if (data) {
+          resolve();
+          this.#logger.info("Upload Success", data.Location);
+        }
+      });
     });
   }
 
-  async delete(key) {
-    const deleteParams = {
+  async deleteObjects(keys) {
+    if (keys.length === 0) {
+      return;
+    }
+
+    let params = {
       Bucket: this.#bucket,
-      Key: key,
+      Delete: {
+        Objects: keys.map(key => {
+          return {Key: key};
+        }),
+      },
     };
-    this.#s3.deleteObject(deleteParams, function (err, data) {
+
+    this.#s3.deleteObjects(params, (err, data) => {
       if (err) {
         throw err;
       }
 
-      console.log("Delete Success", data);
+      this.#logger.info("Delete Success", data);
     });
   }
 }
