@@ -35,6 +35,7 @@ export class BackupInvoker {
             resolve();
           });
         }).catch(err => {
+          this.#logger.error('failed to backup', err);
           reject(err);
         });
       }));
