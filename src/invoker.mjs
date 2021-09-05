@@ -9,11 +9,13 @@ export class BackupInvoker {
   #logger;
   #outlineCli;
   #s3Cli;
+  #slackCli;
 
-  constructor(logger, outlineCli, s3CLi) {
+  constructor(logger, outlineCli, s3CLi, slackCli) {
     this.#logger = logger;
     this.#outlineCli = outlineCli;
     this.#s3Cli = s3CLi;
+    this.#slackCli = slackCli;
   }
 
   async invoke(collectionIDs) {
@@ -50,6 +52,8 @@ export class BackupInvoker {
     });
 
     this.#logger.info('end generationalChange');
+
+    this.#slackCli.send(s.sprintf("Backup complete. \n%s/*", baseKey));
   }
 
   baseKey() {
