@@ -78,9 +78,12 @@ export class BackupInvoker {
       }
 
       const path = key.split('/');
-      if (path.length === 3) {
-        dirList.push(s.sprintf('%s/%s/', path[0], path[1]));
+      const dirPath = s.sprintf('%s/%s/', path[0], path[1]);
+      if (dirList.includes(dirPath)) {
+        return;
       }
+
+      dirList.push(dirPath);
     })
 
     const over = dirList.length - BACKUP_GENS_MAX;
