@@ -18,4 +18,4 @@ build:
 docker/build:
 	$(DOCKER_BUILD) -t $(DOCKER_REGISTRY) .
 docker/push:
-	$(DOCKER_PUSH) -t $(DOCKER_REGISTRY)
+	$(DOCKER_PUSH) $(DOCKER_REGISTRY)
