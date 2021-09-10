@@ -17,7 +17,7 @@ end
 loop repeat for the number of collection IDs
     batch -> outline: export collection
     outline --> batch: zip file
-    batch -> s3: upload zip files
+    batch -> s3: upload a zip file
     s3 --> batch: (result)
 end
 
