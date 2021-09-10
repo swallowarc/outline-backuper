@@ -10,7 +10,6 @@ export class Env {
     this.outline = {
       baseURL: process.env.OUTLINE_BASE_URL ?? 'http://localhost/api',
       token: process.env.OUTLINE_TOKEN ?? 'dummy',
-      collectionIDs: process.env.OUTLINE_COLLECTION_IDS ?? 'dummy',
     };
 
     this.aws = {
@@ -22,7 +21,7 @@ export class Env {
 
     this.slack = {
       botToken: process.env.SLACK_BOT_TOKEN ?? 'dummy',
-      channelID: process.env.SLACK_CHANNEL_ID ?? 'dummy',
+      channelID: process.env.SLACK_CHANNEL_ID ?? '',
     };
   }
 }

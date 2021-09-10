@@ -15,11 +15,8 @@ const oc = new OutlineClient(env.outline.baseURL, env.outline.token);
 const s3 = new S3Client(logger, env.aws.region, env.aws.s3Bucket);
 const slack = new SlackClient(logger, env.slack.botToken, env.slack.channelID);
 const invoker = new BackupInvoker(logger, oc, s3, slack);
-const collectionIDs = env.outline.collectionIDs.split(',');
 
-logger.info('target collection ids', collectionIDs);
-
-invoker.invoke(collectionIDs).catch(err => {
+invoker.invoke().catch(err => {
   logger.error(err)
 }).finally(() => {
   logger.info('end outline backup batch');

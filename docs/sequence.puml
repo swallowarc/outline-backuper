@@ -7,7 +7,14 @@ Participant Outline as outline
 Participant "AWS S3" as s3
 Participant Slack as slack
 
-loop Repeat for the number of collection IDs
+batch -> outline: get collection IDs
+outline --> batch: collection IDs
+
+alt collection ID does not exist
+    batch ->[: exit
+end
+
+loop repeat for the number of collection IDs
     batch -> outline: export collection
     outline --> batch: zip file
     batch -> s3: upload zip files

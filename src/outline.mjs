@@ -16,6 +16,16 @@ export class OutlineClient {
     });
   }
 
+  async listCollectionIDs() {
+    let result = [];
+    const res = await this.#axios.post('collections.list');
+    res.data.data.forEach(collection => {
+      result.push(collection.id);
+    });
+
+    return result;
+  }
+
   async exportCollection(collectionID) {
     const opt = {
       responseType: 'arraybuffer',

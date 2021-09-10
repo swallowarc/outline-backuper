@@ -18,11 +18,18 @@ export class BackupInvoker {
     this.#slackCli = slackCli;
   }
 
-  async invoke(collectionIDs) {
-    const baseKey = this.baseKey();
+  async invoke() {
+    // Get CollectionIDs
+    this.#logger.info('get collection id list');
+    const collectionIDs = await this.#outlineCli.listCollectionIDs();
+    if (collectionIDs.length === 0) {
+      this.#logger.info('Processing ends because the collection does not exist');
+      return;
+    }
 
-    // バックアップ
-    this.#logger.info('begin backup');
+    // Export & Backup
+    const destKey = this.destKey();
+    this.#logger.info('begin backup. destination key: ' + destKey);
 
     const promises = [];
     collectionIDs.forEach(id => {
@@ -31,7 +38,7 @@ export class BackupInvoker {
       promises.push(new Promise((resolve, reject) => {
         this.#outlineCli.exportCollection(id).then(data => {
           this.#logger.info('upload to S3', id);
-          this.#s3Cli.upload(s.sprintf("%s/%s.zip", baseKey, id), data).then(() => {
+          this.#s3Cli.upload(s.sprintf("%s/%s.zip", destKey, id), data).then(() => {
             resolve();
           });
         }).catch(err => {
@@ -42,9 +49,8 @@ export class BackupInvoker {
     });
 
     await Promise.all(promises);
-    this.#logger.info('end backup');
 
-    // 世代交代
+    // Backup generational change
     this.#logger.info('begin generationalChange');
 
     this.generationalChange().catch(err => {
@@ -52,12 +58,10 @@ export class BackupInvoker {
       throw err;
     });
 
-    this.#logger.info('end generationalChange');
-
-    this.#slackCli.send(s.sprintf("Backup complete. \n%s/*", baseKey));
+    this.#slackCli.send(s.sprintf("Backup complete. \n%s/*", destKey));
   }
 
-  baseKey() {
+  destKey() {
     const today = new Date();
     const ymd = s.sprintf(
         "%s-%s-%s",

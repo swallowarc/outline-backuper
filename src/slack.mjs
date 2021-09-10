@@ -12,6 +12,11 @@ export class SlackClient {
   }
 
   async send(message) {
+    if (this.#channelID === '') {
+      this.#logger.info(`Processing is skipped because the channel ID is not specified`);
+      return;
+    }
+
     const result = await this.#slack.chat.postMessage({
       text: message,
       channel: this.#channelID,

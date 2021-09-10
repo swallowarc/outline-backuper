@@ -15,4 +15,5 @@ const outlineCli = new OutlineClient(env.outline.baseURL, env.outline.token);
 const s3Cli = new S3Client(logger, env.aws.region, env.aws.s3Bucket);
 const slackCli = new SlackClient(logger, env.slack.botToken, env.slack.channelID);
 
-await slackCli.send("test message");
+const l = await outlineCli.listCollectionIDs();
+logger.info(l);
