@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+Participant Batch as batch
+Participant Outline as outline
+Participant "AWS S3" as s3
+Participant Slack as slack
+
+loop Repeat for the number of collection IDs
+    batch -> outline: export collection
+    outline --> batch: zip file
+    batch -> s3: upload zip files
+    s3 --> batch: (result)
+end
+
+batch -> s3: get object list
+s3 --> batch: object list
+
+alt number of backups exceeded the threshold
+    batch -> s3: delete zip files
+    s3 --> batch: (result)
+end
+
+batch -> slack: Message
+
+@enduml
